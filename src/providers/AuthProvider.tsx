@@ -5,8 +5,8 @@ import { PropsWithChildren, createContext, useContext, useEffect, useMemo, useSt
 import { loginApi } from '@/services/auth/auth.service';
 import { AuthContextData, SessionUser } from '@/types/auth';
 
-const TOKEN_KEY = 'scge:token';
-const USER_KEY = 'scge:user';
+const TOKEN_KEY = 'scge_token';
+const USER_KEY = 'scge_user';
 
 const demoUser: SessionUser = {
   id: 'demo-admin',
