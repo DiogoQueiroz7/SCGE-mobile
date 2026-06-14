@@ -19,7 +19,7 @@ npm run web
 
 ## Login Demo
 
-Enquanto a autenticacao real do backend nao estiver fechada, use:
+Para acessar a demo local, use:
 
 ```text
 E-mail: demo@scge.com
@@ -28,17 +28,10 @@ Senha: 12345678
 
 Tambem existe o botao `Entrar em modo demo` na tela de login.
 
-## URL Da API
+## Backend
 
-A URL atual fica em `app.json`:
-
-```json
-"extra": {
-  "apiUrl": "http://127.0.0.1:8000"
-}
-```
-
-Para testar em celular físico, trocar `127.0.0.1` pelo IP da máquina na rede.
+Este app mobile nao depende de backend. As telas usam dados locais/mockados para
+permitir a demonstracao e o desenvolvimento visual.
 
 ## Estrutura
 
@@ -83,5 +76,5 @@ SCGE-mobile/
 
 ## Status
 
-O app ja tem navegacao, telas visuais base, modo demo de login e estrutura para integrar a API.
-As proximas etapas sao substituir mocks por chamadas reais e completar os CRUDs.
+O app ja tem navegacao, telas visuais base e modo demo de login.
+As proximas etapas sao completar os fluxos locais, CRUDs mockados e acabamento visual.

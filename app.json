@@ -22,12 +22,8 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {
-      "apiUrl": "http://127.0.0.1:8000"
-    },
     "plugins": [
       "expo-router",
-      "expo-secure-store",
       "expo-sharing"
     ]
   }
