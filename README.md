@@ -5,7 +5,7 @@ App mobile do SCGE em Expo + Expo Router.
 ## Como Rodar
 
 ```powershell
-cd mobile
+cd SCGE-mobile
 npm install
 npm run start
 ```
@@ -16,6 +16,17 @@ Depois, abra no Expo Go ou use:
 npm run android
 npm run web
 ```
+
+## Login Demo
+
+Enquanto a autenticacao real do backend nao estiver fechada, use:
+
+```text
+E-mail: demo@scge.com
+Senha: 12345678
+```
+
+Tambem existe o botao `Entrar em modo demo` na tela de login.
 
 ## URL Da API
 

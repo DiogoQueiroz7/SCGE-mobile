@@ -10,6 +10,9 @@ import { TextField } from '@/components/ui/TextField';
 import { colors } from '@/constants/theme';
 import { useAuth } from '@/providers/AuthProvider';
 
+const DEMO_EMAIL = 'demo@scge.com';
+const DEMO_PASSWORD = '12345678';
+
 export default function LoginScreen() {
   const router = useRouter();
   const { signIn, signInDemo } = useAuth();
@@ -24,11 +27,19 @@ export default function LoginScreen() {
       return;
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (normalizedEmail === DEMO_EMAIL && senha === DEMO_PASSWORD) {
+      await signInDemo();
+      router.replace('/dashboard');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
     try {
-      await signIn(email.trim().toLowerCase(), senha);
+      await signIn(normalizedEmail, senha);
       router.replace('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Nao foi possivel entrar.');
