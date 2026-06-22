@@ -9,12 +9,32 @@ import { Feedback } from '@/components/ui/Feedback';
 import { TextField } from '@/components/ui/TextField';
 import { colors } from '@/constants/theme';
 
+type FeedbackState = {
+  type: 'success' | 'error' | 'warning';
+  message: string;
+};
+
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [feedback, setFeedback] = useState<FeedbackState | null>(null);
 
   function handleSubmit() {
-    setMessage(email.trim() ? 'Se esse e-mail existir, enviaremos as instrucoes de recuperacao.' : 'Informe seu e-mail.');
+    const normalizedEmail = email.trim();
+
+    if (!normalizedEmail) {
+      setFeedback({ type: 'warning', message: 'Informe seu e-mail para continuar.' });
+      return;
+    }
+
+    if (!normalizedEmail.includes('@')) {
+      setFeedback({ type: 'error', message: 'Digite um e-mail valido.' });
+      return;
+    }
+
+    setFeedback({
+      type: 'success',
+      message: 'Demo local: use a tela de redefinicao para simular a troca de senha.',
+    });
   }
 
   return (
@@ -28,8 +48,11 @@ export default function ForgotPasswordScreen() {
           placeholder="seu.email@exemplo.com"
           value={email}
         />
-        <Feedback type={email.trim() ? 'success' : 'warning'} message={message} />
+        <Feedback type={feedback?.type ?? 'warning'} message={feedback?.message} />
         <Button onPress={handleSubmit}>Enviar instrucoes</Button>
+        <Link href="/reset-password" style={styles.inlineLink}>
+          Simular link recebido
+        </Link>
       </Card>
       <Link href="/login" style={styles.link}>
         Voltar para login
@@ -45,6 +68,12 @@ const styles = StyleSheet.create({
   link: {
     color: colors.brand500,
     fontSize: 14,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  inlineLink: {
+    color: colors.brand500,
+    fontSize: 13,
     fontWeight: '700',
     textAlign: 'center',
   },

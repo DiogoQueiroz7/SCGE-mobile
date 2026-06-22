@@ -1,91 +1,287 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
+import { AlertTriangle, ClipboardList, PackageCheck, Users } from 'lucide-react-native';
+import { ReactNode } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+
+import { Screen } from '@/components/layout/Screen';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { colors } from '@/constants/theme';
+import { useAuth } from '@/providers/AuthProvider';
+import { Movement, useData } from '@/providers/DataProvider';
 
 export default function Dashboard() {
+  const router = useRouter();
+  const { signOut, user } = useAuth();
+  const { movements, products, reports, users } = useData();
+
+  const activeProducts = products.filter((product) => product.status === 'ativo');
+  const lowStock = activeProducts.filter((product) => product.quantidade < product.minimo);
+  const activeUsers = users.filter((item) => item.status === 'ativo');
+  const recentMovements = movements.slice(0, 4);
+
+  async function handleSignOut() {
+    await signOut();
+    router.replace('/login');
+  }
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Visão Geral</Text>
-        <Text style={styles.headerSubtitle}>Acompanhe os dados do seu inventário</Text>
+    <Screen title="Dashboard" description={`Bem-vindo, ${user?.nome ?? 'usuario'}. Acompanhe a operacao do estoque.`}>
+      <View style={styles.metricsContainer}>
+        <MetricCard
+          icon={<PackageCheck color={colors.brand500} size={22} />}
+          label="Produtos ativos"
+          value={activeProducts.length}
+          detail={`${products.length} cadastrados`}
+        />
+        <MetricCard
+          icon={<ClipboardList color={colors.green700} size={22} />}
+          label="Movimentacoes"
+          value={movements.length}
+          detail="Historico local"
+          tone="success"
+        />
       </View>
 
       <View style={styles.metricsContainer}>
-        <View style={[styles.card, styles.cardHalf]}>
-          <Text style={styles.cardLabel}>Total de Produtos</Text>
-          <Text style={styles.cardValue}>1.240</Text>
-          <Text style={styles.cardTrendPositive}>+12% na semana</Text>
-        </View>
-        <View style={[styles.card, styles.cardHalf]}>
-          <Text style={styles.cardLabel}>Movimentações</Text>
-          <Text style={styles.cardValue}>34</Text>
-          <Text style={styles.cardTrendNeutral}>Hoje</Text>
-        </View>
+        <MetricCard
+          icon={<AlertTriangle color={colors.amber700} size={22} />}
+          label="Estoque baixo"
+          value={lowStock.length}
+          detail="Itens para reposicao"
+          tone="warning"
+        />
+        <MetricCard
+          icon={<Users color={colors.brand500} size={22} />}
+          label="Usuarios ativos"
+          value={activeUsers.length}
+          detail={`${reports.length} relatorios`}
+        />
       </View>
 
-      <View style={[styles.card, styles.cardFull]}>
-        <Text style={styles.cardLabel}>Itens com Estoque Baixo</Text>
-        <Text style={[styles.cardValue, styles.alertValue]}>12</Text>
-        <Text style={styles.cardSubText}>Requer atenção e reposição imediata</Text>
-      </View>
+      <Card style={styles.alertCard}>
+        <Text style={styles.sectionTitle}>Alertas de estoque</Text>
+        {lowStock.length ? (
+          lowStock.slice(0, 3).map((product) => (
+            <View key={product.id} style={styles.alertItem}>
+              <View>
+                <Text style={styles.alertTitle}>{product.nome}</Text>
+                <Text style={styles.alertDetail}>
+                  {product.quantidade} {product.unidade} em estoque - minimo {product.minimo}
+                </Text>
+              </View>
+              <Text style={styles.alertBadge}>Baixo</Text>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.emptyText}>Nenhum alerta critico no momento.</Text>
+        )}
+      </Card>
 
-      <Text style={styles.sectionTitle}>Atividades Recentes</Text>
-      <View style={styles.activityCard}>
-        <View style={styles.activityItem}>
-          <View style={styles.activityDotSuccess} />
-          <View style={styles.activityTextContainer}>
-            <Text style={styles.activityTitle}>Entrada de Estoque</Text>
-            <Text style={styles.activityDescription}>50 un. de Monitor Dell 27"</Text>
-            <Text style={styles.activityTime}>Há 10 minutos</Text>
-          </View>
+      <Text style={styles.sectionTitle}>Atividades recentes</Text>
+      {recentMovements.length ? (
+        recentMovements.map((movement) => <ActivityCard key={movement.id} movement={movement} />)
+      ) : (
+        <Card>
+          <Text style={styles.emptyText}>Nenhuma movimentacao registrada.</Text>
+        </Card>
+      )}
+
+      <Card style={styles.adminCard}>
+        <Text style={styles.sectionTitle}>Area administrativa</Text>
+        <Text style={styles.adminText}>Acesso rapido para manutencao de usuarios, perfis e sessao da demo.</Text>
+        <View style={styles.actions}>
+          <Button style={styles.actionButton} variant="secondary" onPress={() => router.push('/admin/usuarios')}>
+            Usuarios
+          </Button>
+          <Button style={styles.actionButton} variant="secondary" onPress={() => router.push('/admin/perfis-acesso')}>
+            Perfis
+          </Button>
         </View>
-        <View style={styles.activityDivider} />
-        <View style={styles.activityItem}>
-          <View style={styles.activityDotWarning} />
-          <View style={styles.activityTextContainer}>
-            <Text style={styles.activityTitle}>Ajuste de Inventário</Text>
-            <Text style={styles.activityDescription}>Teclado Mecânico Keychron</Text>
-            <Text style={styles.activityTime}>Há 2 horas</Text>
-          </View>
-        </View>
-        <View style={styles.activityDivider} />
-        <View style={styles.activityItem}>
-          <View style={styles.activityDotError} />
-          <View style={styles.activityTextContainer}>
-            <Text style={styles.activityTitle}>Alerta de Sistema</Text>
-            <Text style={styles.activityDescription}>Falha na sincronização de dados</Text>
-            <Text style={styles.activityTime}>Ontem, 14:30</Text>
-          </View>
-        </View>
+        <Button variant="ghost" onPress={handleSignOut}>
+          Sair
+        </Button>
+      </Card>
+    </Screen>
+  );
+}
+
+function MetricCard({
+  detail,
+  icon,
+  label,
+  tone = 'default',
+  value,
+}: {
+  detail: string;
+  icon: ReactNode;
+  label: string;
+  tone?: 'default' | 'success' | 'warning';
+  value: number;
+}) {
+  return (
+    <Card style={styles.metricCard}>
+      <View style={styles.metricIcon}>{icon}</View>
+      <Text style={styles.metricLabel}>{label}</Text>
+      <Text
+        style={[
+          styles.metricValue,
+          tone === 'success' ? styles.successValue : null,
+          tone === 'warning' ? styles.warningValue : null,
+        ]}
+      >
+        {value}
+      </Text>
+      <Text style={styles.metricDetail}>{detail}</Text>
+    </Card>
+  );
+}
+
+function ActivityCard({ movement }: { movement: Movement }) {
+  const tone =
+    movement.tipo === 'entrada' ? styles.activityDotSuccess : movement.tipo === 'saida' ? styles.activityDotError : styles.activityDotWarning;
+  const label = movement.tipo === 'entrada' ? 'Entrada de estoque' : movement.tipo === 'saida' ? 'Saida de estoque' : 'Ajuste de estoque';
+
+  return (
+    <Card style={styles.activityCard}>
+      <View style={[styles.activityDot, tone]} />
+      <View style={styles.activityText}>
+        <Text style={styles.activityTitle}>{label}</Text>
+        <Text style={styles.activityDescription}>
+          {movement.quantidade} un. - {movement.produtoNome}
+        </Text>
+        <Text style={styles.activityTime}>{movement.data}</Text>
       </View>
-    </ScrollView>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F3F4F6' },
-  content: { padding: 20, paddingBottom: 40 },
-  header: { marginBottom: 24 },
-  headerTitle: { fontSize: 28, fontWeight: 'bold', color: '#111827' },
-  headerSubtitle: { fontSize: 14, color: '#6B7280', marginTop: 4 },
-  metricsContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
-  card: { backgroundColor: '#FFFFFF', borderRadius: 12, padding: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3, elevation: 2 },
-  cardHalf: { width: '48%' },
-  cardFull: { width: '100%', marginBottom: 28 },
-  cardLabel: { fontSize: 13, color: '#6B7280', marginBottom: 8, fontWeight: '600', textTransform: 'uppercase' },
-  cardValue: { fontSize: 32, fontWeight: 'bold', color: '#111827' },
-  alertValue: { color: '#EF4444' },
-  cardTrendPositive: { fontSize: 12, color: '#10B981', marginTop: 4, fontWeight: '500' },
-  cardTrendNeutral: { fontSize: 12, color: '#6B7280', marginTop: 4, fontWeight: '500' },
-  cardSubText: { fontSize: 13, color: '#9CA3AF', marginTop: 4 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#374151', marginBottom: 12 },
-  activityCard: { backgroundColor: '#FFFFFF', borderRadius: 12, padding: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3, elevation: 2 },
-  activityItem: { flexDirection: 'row', alignItems: 'flex-start' },
-  activityDotSuccess: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#10B981', marginRight: 12, marginTop: 5 },
-  activityDotWarning: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#F59E0B', marginRight: 12, marginTop: 5 },
-  activityDotError: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#EF4444', marginRight: 12, marginTop: 5 },
-  activityTextContainer: { flex: 1 },
-  activityTitle: { fontSize: 15, fontWeight: '600', color: '#1F2937' },
-  activityDescription: { fontSize: 14, color: '#4B5563', marginTop: 2 },
-  activityTime: { fontSize: 12, color: '#9CA3AF', marginTop: 4 },
-  activityDivider: { height: 1, backgroundColor: '#F3F4F6', marginVertical: 12 },
+  metricsContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  metricCard: {
+    flex: 1,
+    gap: 7,
+    minHeight: 142,
+  },
+  metricIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.slate100,
+    borderRadius: 8,
+    height: 38,
+    justifyContent: 'center',
+    width: 38,
+  },
+  metricLabel: {
+    color: colors.slate500,
+    fontSize: 11,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  metricValue: {
+    color: colors.brand500,
+    fontSize: 30,
+    fontWeight: '900',
+  },
+  successValue: {
+    color: colors.green700,
+  },
+  warningValue: {
+    color: colors.amber700,
+  },
+  metricDetail: {
+    color: colors.slate500,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  sectionTitle: {
+    color: colors.slate900,
+    fontSize: 18,
+    fontWeight: '900',
+  },
+  alertCard: {
+    gap: 12,
+  },
+  alertItem: {
+    alignItems: 'center',
+    borderTopColor: colors.slate100,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    gap: 12,
+    justifyContent: 'space-between',
+    paddingTop: 12,
+  },
+  alertTitle: {
+    color: colors.slate900,
+    fontSize: 15,
+    fontWeight: '800',
+  },
+  alertDetail: {
+    color: colors.slate500,
+    fontSize: 13,
+  },
+  alertBadge: {
+    color: colors.amber700,
+    fontSize: 12,
+    fontWeight: '900',
+  },
+  activityCard: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 12,
+  },
+  activityDot: {
+    borderRadius: 5,
+    height: 10,
+    marginTop: 5,
+    width: 10,
+  },
+  activityDotSuccess: {
+    backgroundColor: colors.green500,
+  },
+  activityDotWarning: {
+    backgroundColor: colors.amber500,
+  },
+  activityDotError: {
+    backgroundColor: colors.red500,
+  },
+  activityText: {
+    flex: 1,
+  },
+  activityTitle: {
+    color: colors.slate900,
+    fontSize: 15,
+    fontWeight: '800',
+  },
+  activityDescription: {
+    color: colors.slate700,
+    fontSize: 14,
+    marginTop: 2,
+  },
+  activityTime: {
+    color: colors.slate400,
+    fontSize: 12,
+    marginTop: 4,
+  },
+  adminCard: {
+    gap: 12,
+  },
+  adminText: {
+    color: colors.slate500,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  actions: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  actionButton: {
+    flex: 1,
+  },
+  emptyText: {
+    color: colors.slate500,
+    fontSize: 14,
+  },
 });
