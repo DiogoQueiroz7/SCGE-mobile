@@ -61,10 +61,11 @@ SCGE-mobile/
 
 ## Divisao Inicial
 
-- Diogo: `src/app/(auth)/` e `src/app/(app)/(tabs)/inventario.tsx`
-- Fernando: `src/app/(app)/(tabs)/dashboard.tsx`, `src/app/(app)/(tabs)/_layout.tsx` e estrutura Expo
-- Gabriel: `src/app/(app)/(tabs)/movimentacoes.tsx` e `src/app/(app)/(tabs)/relatorios.tsx`
-- Joao: `src/app/(app)/admin/usuarios.tsx` e `src/app/(app)/admin/perfis-acesso.tsx`
+- **Diogo Queiroz**: `src/app/(auth)/` e `src/app/(app)/(tabs)/inventario.tsx`
+- **Fernando Tinno**: `src/app/(app)/(tabs)/dashboard.tsx`, `src/app/(app)/(tabs)/_layout.tsx` e estrutura Expo
+- **Fernando Washington**: responsividade mobile (`_layout.tsx`, `dashboard.tsx`, `login.tsx`), testes no dispositivo e apresentacao comercial do sistema
+- **Gabriel**: `src/app/(app)/(tabs)/movimentacoes.tsx` e `src/app/(app)/(tabs)/relatorios.tsx`
+- **Joao**: `src/app/(app)/admin/usuarios.tsx` e `src/app/(app)/admin/perfis-acesso.tsx`
 
 ## Componentes Base
 
@@ -122,9 +123,13 @@ O app ja tem navegacao, modo demo de login e CRUDs locais para a apresentacao.
 - [x] `SCGE-31` Ajustar backend para Expo: sem backend, app preparado com dados locais
 - [x] `SCGE-32` Corrigir autenticacao real: fluxo demo local documentado
 - [x] `SCGE-33` Validar CRUD principal
-- [ ] `SCGE-34` Testar app no celular/emulador
+- [x] `SCGE-34` Testar app no celular/emulador
 - [x] `SCGE-35` Revisar visual geral
 - [x] `SCGE-36` Preparar demo final
-- [ ] `SCGE-37` Ensaiar apresentacao
+- [x] `SCGE-37` Ensaiar apresentacao
+- [x] `SCGE-38` Criar e apresentar pitch de venda do sistema
+- [x] `SCGE-39` Adicionar indicador de versao na tela de Login
+- [x] `SCGE-40` Corrigir responsividade da tab bar para telas
+- [x] `SCGE-41` Melhorar visual do badge de alerta no Dashboard
 
 Validacao local feita em web; o teste em celular/emulador e o ensaio ficam como etapa final do grupo.

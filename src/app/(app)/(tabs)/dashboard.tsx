@@ -70,7 +70,9 @@ export default function Dashboard() {
                   {product.quantidade} {product.unidade} em estoque - minimo {product.minimo}
                 </Text>
               </View>
-              <Text style={styles.alertBadge}>Baixo</Text>
+              <View style={styles.alertBadgeWrapper}>
+                <Text style={styles.alertBadge}>Baixo</Text>
+              </View>
             </View>
           ))
         ) : (
@@ -222,9 +224,17 @@ const styles = StyleSheet.create({
     color: colors.slate500,
     fontSize: 13,
   },
+  alertBadgeWrapper: {
+    backgroundColor: colors.amber50,
+    borderColor: colors.amber500,
+    borderRadius: 6,
+    borderWidth: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
   alertBadge: {
     color: colors.amber700,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '900',
   },
   activityCard: {

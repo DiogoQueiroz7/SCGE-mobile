@@ -81,6 +81,8 @@ export default function LoginScreen() {
         <Link href="/forgot-password" style={styles.link}>
           Esqueci minha senha
         </Link>
+
+        <Text style={styles.version}>SCGE Mobile v1.0 · Demo</Text>
       </Screen>
     </KeyboardAvoidingView>
   );
@@ -129,5 +131,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     textAlign: 'center',
+  },
+  version: {
+    color: colors.slate400,
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 4,
   },
 });

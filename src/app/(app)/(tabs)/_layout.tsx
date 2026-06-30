@@ -1,20 +1,23 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Platform } from 'react-native';
+import { Platform, useWindowDimensions } from 'react-native';
 
 export default function TabsLayout() {
+  const { height } = useWindowDimensions();
+  const isSmallScreen = height < 700;
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#2563EB', 
-        tabBarInactiveTintColor: '#9CA3AF', 
+        tabBarActiveTintColor: '#2563EB',
+        tabBarInactiveTintColor: '#9CA3AF',
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
           borderTopColor: '#E5E7EB',
-          height: Platform.OS === 'ios' ? 88 : 64,
-          paddingBottom: Platform.OS === 'ios' ? 28 : 10,
-          paddingTop: 10,
+          height: Platform.OS === 'ios' ? (isSmallScreen ? 72 : 88) : (isSmallScreen ? 56 : 64),
+          paddingBottom: Platform.OS === 'ios' ? (isSmallScreen ? 16 : 28) : (isSmallScreen ? 6 : 10),
+          paddingTop: 8,
         },
         tabBarLabelStyle: {
           fontSize: 12,
